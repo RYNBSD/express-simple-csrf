@@ -15,6 +15,11 @@ export default function csrf(options: Options) {
   if (!Array.isArray(ignoreMethod))
     throw new TypeError("ignoreMethod option must be an array");
 
+  if (typeof cookieName !== "string" || cookieName.length === 0)
+    throw new TypeError(
+      "cookieName is not valid, should string and at least one character"
+    );
+
   return function (req: Request, res: Response, next: NextFunction) {
     // Check if csrf token exists
     let csrfSecret = req.session.csrf?.secret ?? "";
