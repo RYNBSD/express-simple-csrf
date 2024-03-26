@@ -3,21 +3,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var http_errors_1 = __importDefault(require("http-errors"));
-var csrf_1 = __importDefault(require("csrf"));
-var http_status_codes_1 = require("http-status-codes");
+const http_errors_1 = __importDefault(require("http-errors"));
+const csrf_1 = __importDefault(require("csrf"));
+const http_status_codes_1 = require("http-status-codes");
 // Creating a new instance of CSRF
-var csrf = new csrf_1.default();
+const csrf = new csrf_1.default();
 // CSRF middleware function
 function default_1(options) {
     // Destructuring options object
-    var cookieOptions = options.cookieOptions, // Options for CSRF cookie
-    _a = options.ignoreMethods, // Options for CSRF cookie
-    ignoreMethods = _a === void 0 ? ["GET", "HEAD", "OPTIONS"] : _a, // HTTP methods to ignore CSRF check
-    _b = options.cookieName, // HTTP methods to ignore CSRF check
-    cookieName = _b === void 0 ? "csrf" : _b;
+    const { cookieOptions, // Options for CSRF cookie
+    ignoreMethods = ["GET", "HEAD", "OPTIONS"], // HTTP methods to ignore CSRF check
+    cookieName = "csrf", // Name of the CSRF cookie
+     } = options;
     // Convert ignoreMethods to an array and ensure its validity
-    var ignoreMethod = Array.from(new Set(ignoreMethods));
+    const ignoreMethod = Array.from(new Set(ignoreMethods));
     // Validate ignoreMethod
     if (!Array.isArray(ignoreMethod))
         throw new TypeError("ignoreMethods option must be an array");
@@ -28,7 +27,7 @@ function default_1(options) {
     return function middleware(req, res, next) {
         var _a, _b, _c, _d, _e;
         // Check if CSRF token exists in session
-        var csrfSecret = (_b = (_a = req.session.csrf) === null || _a === void 0 ? void 0 : _a.secret) !== null && _b !== void 0 ? _b : "";
+        let csrfSecret = (_b = (_a = req.session.csrf) === null || _a === void 0 ? void 0 : _a.secret) !== null && _b !== void 0 ? _b : "";
         // If CSRF token does not exist, create a new one
         if (csrfSecret.length === 0)
             newCsrf(req, res, cookieName, cookieOptions); // Generate new CSRF token
@@ -39,14 +38,14 @@ function default_1(options) {
         }
         // HTTP method not ignored, CSRF check required //
         // Retrieve CSRF token from cookies
-        var csrfToken = (_e = req.cookies[cookieName]) !== null && _e !== void 0 ? _e : "";
+        const csrfToken = (_e = req.cookies[cookieName]) !== null && _e !== void 0 ? _e : "";
         if (csrfToken.length === 0)
             return next((0, http_errors_1.default)(http_status_codes_1.StatusCodes.FORBIDDEN, "Csrf token not provided"));
         // Check if CSRF secret exists
         if (csrfSecret.length === 0)
             return next((0, http_errors_1.default)(http_status_codes_1.StatusCodes.FORBIDDEN, "Expired csrf token"));
         // Verify CSRF token
-        var isCsrfValid = csrf.verify(csrfSecret, csrfToken);
+        const isCsrfValid = csrf.verify(csrfSecret, csrfToken);
         if (!isCsrfValid)
             return next((0, http_errors_1.default)(http_status_codes_1.StatusCodes.FORBIDDEN, "Invalid csrf token"));
         newCsrf(req, res, cookieName, cookieOptions);
@@ -56,9 +55,9 @@ function default_1(options) {
 exports.default = default_1;
 // Function to generate a new CSRF token
 function newCsrf(req, res, cookieName, cookieOptions) {
-    var secret = csrf.secretSync(); // Generate CSRF secret
-    var token = csrf.create(secret);
-    req.session.csrf = { secret: secret }; // Store CSRF secret in session
+    const secret = csrf.secretSync(); // Generate CSRF secret
+    const token = csrf.create(secret);
+    req.session.csrf = { secret }; // Store CSRF secret in session
     res.cookie(cookieName, token, cookieOptions); // Set CSRF token in cookie
     req.cookies[cookieName] = token; // Store CSRF token in request object
 }
