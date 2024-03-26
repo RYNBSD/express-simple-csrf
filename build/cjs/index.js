@@ -25,20 +25,19 @@ function simpleCsrf(options) {
         throw new TypeError("cookieName is not valid, should be a non-empty string");
     // CSRF middleware function
     return function middleware(req, res, next) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c;
         // Check if CSRF token exists in session
         let csrfSecret = (_b = (_a = req.session.csrf) === null || _a === void 0 ? void 0 : _a.secret) !== null && _b !== void 0 ? _b : "";
         // If CSRF token does not exist, create a new one
         if (csrfSecret.length === 0)
             newCsrf(req, res, cookieName, cookieOptions); // Generate new CSRF token
-        csrfSecret = (_d = (_c = req.session.csrf) === null || _c === void 0 ? void 0 : _c.secret) !== null && _d !== void 0 ? _d : "";
         // Check if HTTP method is ignored for CSRF check
         if (ignoreMethod.includes(req.method)) {
             return next(); // Proceed to next middleware
         }
         // HTTP method not ignored, CSRF check required //
         // Retrieve CSRF token from cookies
-        const csrfToken = (_e = req.cookies[cookieName]) !== null && _e !== void 0 ? _e : "";
+        const csrfToken = (_c = req.cookies[cookieName]) !== null && _c !== void 0 ? _c : "";
         if (csrfToken.length === 0)
             return res.sendStatus(http_status_codes_1.StatusCodes.FORBIDDEN);
         // Check if CSRF secret exists
@@ -59,6 +58,5 @@ function newCsrf(req, res, cookieName, cookieOptions) {
     const token = csrf.create(secret);
     req.session.csrf = { secret }; // Store CSRF secret in session
     res.cookie(cookieName, token, cookieOptions); // Set CSRF token in cookie
-    req.cookies[cookieName] = token; // Store CSRF token in request object
 }
 //# sourceMappingURL=index.js.map
