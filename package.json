@@ -5,7 +5,9 @@
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
   "scripts": {
-    "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json"
+    "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
+    "example:cjs": "node ./example/cjs.cjs",
+    "example:esm": "node ./example/mjs.mjs"
   },
   "keywords": ["csrf", "express"],
   "author": "",
