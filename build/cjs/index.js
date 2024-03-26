@@ -6,8 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var http_errors_1 = __importDefault(require("http-errors"));
 var csrf_1 = __importDefault(require("csrf"));
 var http_status_codes_1 = require("http-status-codes");
+// Creating a new instance of CSRF
+var csrf = new csrf_1.default();
 // CSRF middleware function
-function csrf(options) {
+function default_1(options) {
     // Destructuring options object
     var cookieOptions = options.cookieOptions, // Options for CSRF cookie
     _a = options.ignoreMethods, // Options for CSRF cookie
@@ -43,18 +45,18 @@ function csrf(options) {
         if (csrfSecret.length === 0)
             next((0, http_errors_1.default)(http_status_codes_1.StatusCodes.FORBIDDEN, "Expired csrf token"));
         // Verify CSRF token
-        var isCsrfValid = new csrf_1.default().verify(csrfSecret, csrfToken);
+        var isCsrfValid = csrf.verify(csrfSecret, csrfToken);
         if (!isCsrfValid)
             return next((0, http_errors_1.default)(http_status_codes_1.StatusCodes.FORBIDDEN, "Invalid csrf token"));
         newCsrf(req, res, cookieName, cookieOptions);
         next(); // Proceed to next middleware
     };
 }
-exports.default = csrf;
+exports.default = default_1;
 // Function to generate a new CSRF token
 function newCsrf(req, res, cookieName, cookieOptions) {
-    var token = new csrf_1.default(); // Create new CSRF token
-    var secret = token.secretSync(); // Generate CSRF secret
+    var secret = csrf.secretSync(); // Generate CSRF secret
+    var token = csrf.create(secret);
     req.session.csrf = { secret: secret }; // Store CSRF secret in session
     res.cookie(cookieName, token, cookieOptions); // Set CSRF token in cookie
     req.cookies[cookieName] = token; // Store CSRF token in request object
