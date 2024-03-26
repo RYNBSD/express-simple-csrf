@@ -17,21 +17,23 @@ app.use(
     },
   })
 );
-app.use(csrf({
-  ignoreMethods/* not required */: ["GET", "HEAD", "OPTIONS"], // default
-  cookieName/* not required */: "csrf", // default
-  cookieOptions/* required */: { path: "/", maxAge: 1000 * 60 * 15 }
-}));
+app.use(
+  csrf({
+    ignoreMethods /* not required */: ["GET", "HEAD", "OPTIONS"], // default
+    cookieName /* not required */: "csrf", // default
+    cookieOptions /* required */: { path: "/", maxAge: 1000 * 60 * 15 },
+  })
+);
 
 app.get("/", (req, res) => {
   console.log(req.session, req.cookies);
-  res.send("Unprotected")
-})
+  res.send("Unprotected");
+});
 
 app.post("/", (req, res) => {
   console.log(req.session, req.cookies);
-  res.send("Protected")
-})
+  res.send("Protected");
+});
 
 app.listen(3000, () => {
   console.log("start");
