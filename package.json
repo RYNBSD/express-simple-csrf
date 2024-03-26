@@ -7,7 +7,7 @@
   "scripts": {
     "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json"
   },
-  "keywords": [],
+  "keywords": ["csrf", "express"],
   "author": "",
   "license": "ISC",
   "dependencies": {
