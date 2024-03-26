@@ -1,9 +1,11 @@
+// Importing necessary types and modules
 import type { Request, Response, NextFunction, CookieOptions } from "express";
 import createError from "http-errors";
 import Csrf from "csrf";
 import { StatusCodes } from "http-status-codes";
 
-const csrf = new Csrf()
+// Creating a new instance of CSRF
+const csrf = new Csrf();
 
 // CSRF middleware function
 export default function (options: Options) {
