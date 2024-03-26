@@ -1,10 +1,12 @@
 import type { Request, Response, NextFunction, CookieOptions } from "express";
 import createError from "http-errors";
-import Token from "csrf";
+import Csrf from "csrf";
 import { StatusCodes } from "http-status-codes";
 
+const csrf = new Csrf()
+
 // CSRF middleware function
-export default function csrf(options: Options) {
+export default function (options: Options) {
   // Destructuring options object
   const {
     cookieOptions, // Options for CSRF cookie
@@ -52,7 +54,7 @@ export default function csrf(options: Options) {
       next(createError(StatusCodes.FORBIDDEN, "Expired csrf token"));
 
     // Verify CSRF token
-    const isCsrfValid = new Token().verify(csrfSecret, csrfToken);
+    const isCsrfValid = csrf.verify(csrfSecret, csrfToken);
     if (!isCsrfValid)
       return next(createError(StatusCodes.FORBIDDEN, "Invalid csrf token"));
 
@@ -68,8 +70,8 @@ function newCsrf(
   cookieName: string,
   cookieOptions: CookieOptions
 ) {
-  const token = new Token(); // Create new CSRF token
-  const secret = token.secretSync(); // Generate CSRF secret
+  const secret = csrf.secretSync(); // Generate CSRF secret
+  const token = csrf.create(secret)
   req.session.csrf = { secret }; // Store CSRF secret in session
   res.cookie(cookieName, token, cookieOptions); // Set CSRF token in cookie
   req.cookies[cookieName] = token; // Store CSRF token in request object
