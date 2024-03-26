@@ -1,7 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import session from "express-session";
-import csrf from "../build/esm/index.js";
+import { simpleCsrf } from "../build/esm/index.js";
 
 const app = express();
 
@@ -18,7 +18,7 @@ app.use(
   })
 );
 app.use(
-  csrf({
+  simpleCsrf({
     ignoreMethods /* not required */: ["GET", "HEAD", "OPTIONS"], // default
     cookieName /* not required */: "csrf", // default
     cookieOptions /* required */: { path: "/", maxAge: 1000 * 60 * 15 },

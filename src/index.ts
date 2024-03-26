@@ -8,7 +8,7 @@ import { StatusCodes } from "http-status-codes";
 const csrf = new Csrf();
 
 // CSRF middleware function
-export default function (options: Options) {
+export function simpleCsrf(options: Options) {
   // Destructuring options object
   const {
     cookieOptions, // Options for CSRF cookie

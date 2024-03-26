@@ -4,7 +4,7 @@ import { StatusCodes } from "http-status-codes";
 // Creating a new instance of CSRF
 const csrf = new Csrf();
 // CSRF middleware function
-export default function (options) {
+export function simpleCsrf(options) {
     // Destructuring options object
     const { cookieOptions, // Options for CSRF cookie
     ignoreMethods = ["GET", "HEAD", "OPTIONS"], // HTTP methods to ignore CSRF check

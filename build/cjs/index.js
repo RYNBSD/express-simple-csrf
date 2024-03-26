@@ -3,13 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.simpleCsrf = void 0;
 const http_errors_1 = __importDefault(require("http-errors"));
 const csrf_1 = __importDefault(require("csrf"));
 const http_status_codes_1 = require("http-status-codes");
 // Creating a new instance of CSRF
 const csrf = new csrf_1.default();
 // CSRF middleware function
-function default_1(options) {
+function simpleCsrf(options) {
     // Destructuring options object
     const { cookieOptions, // Options for CSRF cookie
     ignoreMethods = ["GET", "HEAD", "OPTIONS"], // HTTP methods to ignore CSRF check
@@ -52,7 +53,7 @@ function default_1(options) {
         next(); // Proceed to next middleware
     };
 }
-exports.default = default_1;
+exports.simpleCsrf = simpleCsrf;
 // Function to generate a new CSRF token
 function newCsrf(req, res, cookieName, cookieOptions) {
     const secret = csrf.secretSync(); // Generate CSRF secret

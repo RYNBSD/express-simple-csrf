@@ -1,7 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-const { default: csrf } = require("../build/cjs/index.js");
+const { simpleCsrf } = require("../build/cjs/index.js");
 
 const app = express();
 
@@ -18,7 +18,7 @@ app.use(
   })
 );
 app.use(
-  csrf({
+  simpleCsrf({
     ignoreMethods /* not required */: ["GET", "HEAD", "OPTIONS"], // default
     cookieName /* not required */: "csrf", // default
     cookieOptions /* required */: { path: "/", maxAge: 1000 * 60 * 15 },
