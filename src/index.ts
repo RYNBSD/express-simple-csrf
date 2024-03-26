@@ -17,7 +17,7 @@ export default function csrf(options: Options) {
 
   // Validate ignoreMethod
   if (!Array.isArray(ignoreMethod))
-    throw new TypeError("ignoreMethod option must be an array");
+    throw new TypeError("ignoreMethods option must be an array");
 
   // Validate cookieName
   if (typeof cookieName !== "string" || cookieName.length === 0)
@@ -26,16 +26,12 @@ export default function csrf(options: Options) {
     );
 
   // CSRF middleware function
-  return function (req: Request, res: Response, next: NextFunction) {
+  return function middleware(req: Request, res: Response, next: NextFunction) {
     // Check if CSRF token exists in session
     let csrfSecret = req.session.csrf?.secret ?? "";
 
     // If CSRF token does not exist, create a new one
-    if (csrfSecret.length === 0) {
-      const token = newCsrf(req); // Generate new CSRF token
-      res.cookie(cookieName, token, cookieOptions); // Set CSRF token in cookie
-      req.cookies[cookieName] = token; // Store CSRF token in request object
-    }
+    if (csrfSecret.length === 0) newCsrf(req, res, cookieName, cookieOptions); // Generate new CSRF token
 
     // Check if HTTP method is ignored for CSRF check
     if (ignoreMethod.includes(req.method as Methods)) {
@@ -60,16 +56,23 @@ export default function csrf(options: Options) {
     if (!isCsrfValid)
       return next(createError(StatusCodes.FORBIDDEN, "Invalid csrf token"));
 
+    newCsrf(req, res, cookieName, cookieOptions);
     next(); // Proceed to next middleware
   };
 }
 
 // Function to generate a new CSRF token
-function newCsrf(req: Request) {
+function newCsrf(
+  req: Request,
+  res: Response,
+  cookieName: string,
+  cookieOptions: CookieOptions
+) {
   const token = new Token(); // Create new CSRF token
   const secret = token.secretSync(); // Generate CSRF secret
   req.session.csrf = { secret }; // Store CSRF secret in session
-  return token; // Return CSRF token
+  res.cookie(cookieName, token, cookieOptions); // Set CSRF token in cookie
+  req.cookies[cookieName] = token; // Store CSRF token in request object
 }
 
 // Supported HTTP methods
