@@ -37,6 +37,8 @@ export default function (options: Options) {
     // If CSRF token does not exist, create a new one
     if (csrfSecret.length === 0) newCsrf(req, res, cookieName, cookieOptions); // Generate new CSRF token
 
+    csrfSecret = req.session.csrf?.secret ?? "";
+
     // Check if HTTP method is ignored for CSRF check
     if (ignoreMethod.includes(req.method as Methods)) {
       return next(); // Proceed to next middleware
@@ -73,7 +75,7 @@ function newCsrf(
   cookieOptions: CookieOptions
 ) {
   const secret = csrf.secretSync(); // Generate CSRF secret
-  const token = csrf.create(secret)
+  const token = csrf.create(secret);
   req.session.csrf = { secret }; // Store CSRF secret in session
   res.cookie(cookieName, token, cookieOptions); // Set CSRF token in cookie
   req.cookies[cookieName] = token; // Store CSRF token in request object

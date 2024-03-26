@@ -26,19 +26,20 @@ function default_1(options) {
         throw new TypeError("cookieName is not valid, should be a non-empty string");
     // CSRF middleware function
     return function middleware(req, res, next) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e;
         // Check if CSRF token exists in session
         var csrfSecret = (_b = (_a = req.session.csrf) === null || _a === void 0 ? void 0 : _a.secret) !== null && _b !== void 0 ? _b : "";
         // If CSRF token does not exist, create a new one
         if (csrfSecret.length === 0)
             newCsrf(req, res, cookieName, cookieOptions); // Generate new CSRF token
+        csrfSecret = (_d = (_c = req.session.csrf) === null || _c === void 0 ? void 0 : _c.secret) !== null && _d !== void 0 ? _d : "";
         // Check if HTTP method is ignored for CSRF check
         if (ignoreMethod.includes(req.method)) {
             return next(); // Proceed to next middleware
         }
         // HTTP method not ignored, CSRF check required //
         // Retrieve CSRF token from cookies
-        var csrfToken = (_c = req.cookies[cookieName]) !== null && _c !== void 0 ? _c : "";
+        var csrfToken = (_e = req.cookies[cookieName]) !== null && _e !== void 0 ? _e : "";
         if (csrfToken.length === 0)
             return next((0, http_errors_1.default)(http_status_codes_1.StatusCodes.FORBIDDEN, "Csrf token not provided"));
         // Check if CSRF secret exists
