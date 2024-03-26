@@ -1,5 +1,5 @@
 {
-  "name": "express-csrf",
+  "name": "express-simple-csrf",
   "version": "0.1.0",
   "description": "",
   "main": "./build/cjs/index.js",
