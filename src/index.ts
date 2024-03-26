@@ -53,7 +53,7 @@ export default function (options: Options) {
 
     // Check if CSRF secret exists
     if (csrfSecret.length === 0)
-      next(createError(StatusCodes.FORBIDDEN, "Expired csrf token"));
+      return next(createError(StatusCodes.FORBIDDEN, "Expired csrf token"));
 
     // Verify CSRF token
     const isCsrfValid = csrf.verify(csrfSecret, csrfToken);

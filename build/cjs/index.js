@@ -43,7 +43,7 @@ function default_1(options) {
             return next((0, http_errors_1.default)(http_status_codes_1.StatusCodes.FORBIDDEN, "Csrf token not provided"));
         // Check if CSRF secret exists
         if (csrfSecret.length === 0)
-            next((0, http_errors_1.default)(http_status_codes_1.StatusCodes.FORBIDDEN, "Expired csrf token"));
+            return next((0, http_errors_1.default)(http_status_codes_1.StatusCodes.FORBIDDEN, "Expired csrf token"));
         // Verify CSRF token
         var isCsrfValid = csrf.verify(csrfSecret, csrfToken);
         if (!isCsrfValid)

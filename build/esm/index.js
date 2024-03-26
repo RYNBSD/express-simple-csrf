@@ -38,7 +38,7 @@ export default function (options) {
             return next(createError(StatusCodes.FORBIDDEN, "Csrf token not provided"));
         // Check if CSRF secret exists
         if (csrfSecret.length === 0)
-            next(createError(StatusCodes.FORBIDDEN, "Expired csrf token"));
+            return next(createError(StatusCodes.FORBIDDEN, "Expired csrf token"));
         // Verify CSRF token
         var isCsrfValid = csrf.verify(csrfSecret, csrfToken);
         if (!isCsrfValid)
