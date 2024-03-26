@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.simpleCsrf = void 0;
-const http_errors_1 = __importDefault(require("http-errors"));
 const csrf_1 = __importDefault(require("csrf"));
 const http_status_codes_1 = require("http-status-codes");
 // Creating a new instance of CSRF
@@ -41,14 +40,14 @@ function simpleCsrf(options) {
         // Retrieve CSRF token from cookies
         const csrfToken = (_e = req.cookies[cookieName]) !== null && _e !== void 0 ? _e : "";
         if (csrfToken.length === 0)
-            return next((0, http_errors_1.default)(http_status_codes_1.StatusCodes.FORBIDDEN, "Csrf token not provided"));
+            return res.sendStatus(http_status_codes_1.StatusCodes.FORBIDDEN);
         // Check if CSRF secret exists
         if (csrfSecret.length === 0)
-            return next((0, http_errors_1.default)(http_status_codes_1.StatusCodes.FORBIDDEN, "Expired csrf token"));
+            return res.sendStatus(http_status_codes_1.StatusCodes.FORBIDDEN);
         // Verify CSRF token
         const isCsrfValid = csrf.verify(csrfSecret, csrfToken);
         if (!isCsrfValid)
-            return next((0, http_errors_1.default)(http_status_codes_1.StatusCodes.FORBIDDEN, "Invalid csrf token"));
+            return res.sendStatus(http_status_codes_1.StatusCodes.FORBIDDEN);
         newCsrf(req, res, cookieName, cookieOptions);
         next(); // Proceed to next middleware
     };
