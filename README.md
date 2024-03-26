@@ -103,3 +103,7 @@ app.listen(3000, () => {
   console.log("start");
 });
 ```
+
+# How it work?
+
+![Algorithm](/assets/images/algorithm.png)

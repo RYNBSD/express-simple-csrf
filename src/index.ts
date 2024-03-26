@@ -1,6 +1,5 @@
 // Importing necessary types and modules
 import type { Request, Response, NextFunction, CookieOptions } from "express";
-import createError from "http-errors";
 import Csrf from "csrf";
 import { StatusCodes } from "http-status-codes";
 
@@ -49,18 +48,16 @@ export function simpleCsrf(options: Options) {
     // Retrieve CSRF token from cookies
     const csrfToken = req.cookies[cookieName] ?? "";
     if (csrfToken.length === 0)
-      return next(
-        createError(StatusCodes.FORBIDDEN, "Csrf token not provided")
-      );
+      return res.sendStatus(StatusCodes.FORBIDDEN);
 
     // Check if CSRF secret exists
     if (csrfSecret.length === 0)
-      return next(createError(StatusCodes.FORBIDDEN, "Expired csrf token"));
+      return res.sendStatus(StatusCodes.FORBIDDEN);
 
     // Verify CSRF token
     const isCsrfValid = csrf.verify(csrfSecret, csrfToken);
     if (!isCsrfValid)
-      return next(createError(StatusCodes.FORBIDDEN, "Invalid csrf token"));
+      return res.sendStatus(StatusCodes.FORBIDDEN);
 
     newCsrf(req, res, cookieName, cookieOptions);
     next(); // Proceed to next middleware
