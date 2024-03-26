@@ -1,5 +1,5 @@
 An unofficial csrf protection for express.js.<br>
-You use both **Esm** and **Cjs**
+You can use both **Esm** and **Cjs**
 
 # Install
 
