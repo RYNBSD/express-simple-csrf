@@ -1,10 +1,10 @@
 // Importing necessary types and modules
 import type { Request, Response, NextFunction, CookieOptions } from "express";
 import Csrf from "csrf";
-import { StatusCodes } from "http-status-codes";
 
 // Creating a new instance of CSRF
 const csrf = new Csrf();
+const FORBIDDEN = 403;
 
 // CSRF middleware function
 export function simpleCsrf(options: Options) {
@@ -13,6 +13,7 @@ export function simpleCsrf(options: Options) {
     cookieOptions, // Options for CSRF cookie
     ignoreMethods = ["GET", "HEAD", "OPTIONS"], // HTTP methods to ignore CSRF check
     cookieName = "csrf", // Name of the CSRF cookie
+    jsonError = { success: false },
   } = options;
 
   // Convert ignoreMethods to an array and ensure its validity
@@ -45,18 +46,16 @@ export function simpleCsrf(options: Options) {
 
     // Retrieve CSRF token from cookies
     const csrfToken = req.cookies[cookieName] ?? "";
-    if (csrfToken.length === 0)
-      return res.sendStatus(StatusCodes.FORBIDDEN);
+    if (csrfToken.length === 0) return res.status(FORBIDDEN).json(jsonError);
 
     // Check if CSRF secret exists
-    if (csrfSecret.length === 0)
-      return res.sendStatus(StatusCodes.FORBIDDEN);
+    if (csrfSecret.length === 0) return res.status(FORBIDDEN).json(jsonError);
 
     // Verify CSRF token
     const isCsrfValid = csrf.verify(csrfSecret, csrfToken);
-    if (!isCsrfValid)
-      return res.sendStatus(StatusCodes.FORBIDDEN);
+    if (!isCsrfValid) return res.status(FORBIDDEN).json(jsonError);
 
+    // Generate and set a new CSRF token
     newCsrf(req, res, cookieName, cookieOptions);
     next(); // Proceed to next middleware
   };
@@ -83,4 +82,5 @@ type Options = {
   cookieOptions: CookieOptions; // Options for CSRF cookie
   ignoreMethods?: Methods[]; // HTTP methods to ignore CSRF check
   cookieName?: string; // Name of the CSRF cookie
+  jsonError?: Record<any, any>; // json response on failed (invalid csrf)
 };
