@@ -23,6 +23,7 @@ app.use(
     ignoreMethods /* not required */: ["GET", "HEAD", "OPTIONS"], // default
     cookieName /* not required */: "csrf", // default
     jsonError /* not required */: { success: false }, // default
+    debug /* not required */: false, //default
   })
 );
 
@@ -32,6 +33,11 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", (req, res) => {
+  console.log(req.session, req.cookies);
+  res.send("Protected");
+});
+
+app.put("/", (req, res) => {
   console.log(req.session, req.cookies);
   res.send("Protected");
 });

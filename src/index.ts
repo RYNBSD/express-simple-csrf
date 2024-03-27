@@ -14,6 +14,7 @@ export function simpleCsrf(options: Options) {
     ignoreMethods = ["GET", "HEAD", "OPTIONS"], // HTTP methods to ignore CSRF check
     cookieName = "csrf", // Name of the CSRF cookie
     jsonError = { success: false },
+    debug = false,
   } = options;
 
   // Convert ignoreMethods to an array and ensure its validity
@@ -32,7 +33,7 @@ export function simpleCsrf(options: Options) {
   // CSRF middleware function
   return function middleware(req: Request, res: Response, next: NextFunction) {
     // Check if CSRF token exists in session
-    let csrfSecret = req.session.csrf?.secret ?? "";
+    const csrfSecret = req.session.csrf?.secret ?? "";
 
     // If CSRF token does not exist, create a new one
     if (csrfSecret.length === 0) newCsrf(req, res, cookieName, cookieOptions); // Generate new CSRF token
@@ -46,14 +47,32 @@ export function simpleCsrf(options: Options) {
 
     // Retrieve CSRF token from cookies
     const csrfToken = req.cookies[cookieName] ?? "";
-    if (csrfToken.length === 0) return res.status(FORBIDDEN).json(jsonError);
+
+    if (debug) {
+      console.debug(`Secret: ${csrfSecret}`);
+      console.debug(`Token: ${csrfToken}`);
+    }
+
+    if (csrfToken.length === 0)
+      return res.status(FORBIDDEN).json({
+        message: "Invalid csrf token",
+        ...jsonError,
+      });
 
     // Check if CSRF secret exists
-    if (csrfSecret.length === 0) return res.status(FORBIDDEN).json(jsonError);
+    if (csrfSecret.length === 0)
+      return res.status(FORBIDDEN).json({
+        message: "Invalid csrf secret",
+        ...jsonError,
+      });
 
     // Verify CSRF token
     const isCsrfValid = csrf.verify(csrfSecret, csrfToken);
-    if (!isCsrfValid) return res.status(FORBIDDEN).json(jsonError);
+    if (!isCsrfValid)
+      return res.status(FORBIDDEN).json({
+        message: "Invalid csrf",
+        ...jsonError,
+      });
 
     // Generate and set a new CSRF token
     newCsrf(req, res, cookieName, cookieOptions);
@@ -83,4 +102,5 @@ type Options = {
   ignoreMethods?: Methods[]; // HTTP methods to ignore CSRF check
   cookieName?: string; // Name of the CSRF cookie
   jsonError?: Record<any, any>; // json response on failed (invalid csrf)
+  debug?: boolean; // debug mode
 };

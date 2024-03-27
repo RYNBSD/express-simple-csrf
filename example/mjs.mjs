@@ -23,6 +23,7 @@ app.use(
     ignoreMethods /* not required */: ["GET", "HEAD", "OPTIONS"], // default
     cookieName /* not required */: "csrf", // default
     jsonError /* not required */: { success: false }, // default
+    debug /* not required */: false, //default
   })
 );
 

@@ -6,6 +6,7 @@ type Options = {
     ignoreMethods?: Methods[];
     cookieName?: string;
     jsonError?: Record<any, any>;
+    debug?: boolean;
 };
 export {};
 //# sourceMappingURL=index.d.ts.map
