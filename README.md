@@ -1,5 +1,5 @@
 An unofficial csrf protection for express.js.<br>
-You can use both **Esm** and **Cjs**
+You can use both **Esm** and **Cjs**.
 
 # Install
 
@@ -38,9 +38,10 @@ app.use(
 );
 app.use(
   simpleCsrf({
+    cookieOptions /* required */: { path: "/", maxAge: 1000 * 60 * 15 },
     ignoreMethods /* not required */: ["GET", "HEAD", "OPTIONS"], // default
     cookieName /* not required */: "csrf", // default
-    cookieOptions /* required */: { path: "/", maxAge: 1000 * 60 * 15 },
+    jsonError /* not required */: { success: false }, // default
   })
 );
 
@@ -83,9 +84,10 @@ app.use(
 );
 app.use(
   simpleCsrf({
+    cookieOptions /* required */: { path: "/", maxAge: 1000 * 60 * 15 },
     ignoreMethods /* not required */: ["GET", "HEAD", "OPTIONS"], // default
     cookieName /* not required */: "csrf", // default
-    cookieOptions /* required */: { path: "/", maxAge: 1000 * 60 * 15 },
+    jsonError /* not required */: { success: false }, // default
   })
 );
 

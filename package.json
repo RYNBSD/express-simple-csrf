@@ -1,6 +1,6 @@
 {
   "name": "express-simple-csrf",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
@@ -11,7 +11,8 @@
   },
   "keywords": [
     "csrf",
-    "express"
+    "express",
+    "simple"
   ],
   "author": "",
   "license": "ISC",
