@@ -20,25 +20,24 @@ app.use(
 app.use(
   simpleCsrf({
     cookieOptions /* required */: { path: "/", maxAge: 1000 * 60 * 15 },
-    ignoreMethods /* not required */: ["GET", "HEAD", "OPTIONS"], // default
-    cookieName /* not required */: "csrf", // default
-    jsonError /* not required */: { success: false }, // default
-    debug /* not required */: false, //default
+    ignorePaths: ["/ignore"],
+    debug: true,
   })
 );
 
 app.get("/", (req, res) => {
-  console.log(req.session, req.cookies);
+  res.send("Unprotected");
+});
+
+app.post("/ignore", (req, res) => {
   res.send("Unprotected");
 });
 
 app.post("/", (req, res) => {
-  console.log(req.session, req.cookies);
   res.send("Protected");
 });
 
 app.put("/", (req, res) => {
-  console.log(req.session, req.cookies);
   res.send("Protected");
 });
 

@@ -1,5 +1,6 @@
-An unofficial csrf protection for express.js.<br>
-You can use both **Esm** and **Cjs**.
+An unofficial csrf protection for express.js<br>
+**Simple** but **strong**<br>
+You can use both **Esm** and **Cjs**
 
 # Install
 
@@ -49,13 +50,13 @@ app.use(
     },
   })
 );
+/*
+  That simple
+  hover on the function to see full options and description
+*/
 app.use(
   simpleCsrf({
     cookieOptions /* required */: { path: "/", maxAge: 1000 * 60 * 15 },
-    ignoreMethods /* not required */: ["GET", "HEAD", "OPTIONS"], // default
-    cookieName /* not required */: "csrf", // default
-    jsonError /* not required */: { success: false }, // default
-    debug /* not required */: false, // default
   })
 );
 
@@ -73,6 +74,9 @@ app.listen(3000, () => {
   console.log("start");
 });
 ```
+
+# Features
+Full customizable, you can customize how to handle each request, by add csrf disable header, ignored methods or paths and the middleware is very simple to use
 
 # How it work?
 
