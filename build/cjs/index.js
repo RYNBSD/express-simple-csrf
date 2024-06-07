@@ -10,9 +10,12 @@ const csrf = new csrf_1.default();
 const FORBIDDEN = 403;
 function simpleCsrf(options) {
     const { cookieOptions, ignoreMethods = ["GET", "HEAD", "OPTIONS", "PATCH"], ignorePaths = [], cookieName = "csrf", jsonError = { success: false }, debug = false, xNoCsrf = exports.X_NO_CSRF.toLowerCase(), } = options;
-    const ignoreMethod = Array.from(new Set(ignoreMethods));
-    if (!Array.isArray(ignoreMethod))
+    if (!Array.isArray(ignoreMethods))
         throw new TypeError("ignoreMethods option must be an array");
+    const ignoreMethod = Array.from(new Set(ignoreMethods));
+    if (!Array.isArray(ignorePaths))
+        throw new TypeError("ignorePaths option must be an array");
+    const ignorePath = Array.from(new Set(ignorePaths));
     if (typeof cookieName !== "string" || cookieName.length === 0)
         throw new TypeError("cookieName is not valid, should be a non-empty string");
     if (typeof xNoCsrf !== "string")
@@ -42,7 +45,7 @@ function simpleCsrf(options) {
                 debugFn(csrfSecret, csrfToken, { isIn: false, isChanged: false });
             return next();
         }
-        if (ignorePaths.includes(req.path)) {
+        if (ignorePath.includes(req.path)) {
             if (debug)
                 debugFn(csrfSecret, csrfToken, { isIn: false, isChanged: false });
             return next();

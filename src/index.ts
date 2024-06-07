@@ -30,12 +30,18 @@ export function simpleCsrf(options: Options) {
     xNoCsrf = X_NO_CSRF.toLowerCase(), // If length equal 0, don't skip csrf check
   } = options;
 
+  // Validate ignoreMethods
+  if (!Array.isArray(ignoreMethods))
+    throw new TypeError("ignoreMethods option must be an array");
+
   // Convert ignoreMethods to an array and ensure its validity
   const ignoreMethod = Array.from(new Set(ignoreMethods));
 
-  // Validate ignoreMethod
-  if (!Array.isArray(ignoreMethod))
-    throw new TypeError("ignoreMethods option must be an array");
+  // Validate ignorePaths
+  if (!Array.isArray(ignorePaths))
+    throw new TypeError("ignorePaths option must be an array");
+
+  const ignorePath = Array.from(new Set(ignorePaths));
 
   // Validate cookieName
   if (typeof cookieName !== "string" || cookieName.length === 0)
@@ -88,7 +94,7 @@ export function simpleCsrf(options: Options) {
       return next();
     }
 
-    if (ignorePaths.includes(req.path)) {
+    if (ignorePath.includes(req.path)) {
       if (debug)
         debugFn(csrfSecret, csrfToken, { isIn: false, isChanged: false });
       return next();
